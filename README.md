@@ -1,5 +1,9 @@
 # 3D Point-Cloud Classifier (PointNet)
 
+[![CI](https://github.com/Airohh/pointnet-3d-classifier/actions/workflows/ci.yml/badge.svg)](https://github.com/Airohh/pointnet-3d-classifier/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
+
 Classify 3D CAD meshes from their geometry alone. A mesh (`.off`, `.ply`,
 `.stl`, `.obj`) is sampled into a point cloud, normalised, and fed to a
 **PointNet** network that is invariant to point order and to rigid pose. The
