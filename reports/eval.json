@@ -1,0 +1,15 @@
+{
+  "overall_acc": 0.8722466960352423,
+  "per_class_acc": {
+    "bathtub": 0.8,
+    "bed": 0.96,
+    "chair": 0.99,
+    "desk": 0.6627906976744186,
+    "dresser": 0.8488372093023255,
+    "monitor": 0.94,
+    "night_stand": 0.6627906976744186,
+    "sofa": 0.97,
+    "table": 0.86,
+    "toilet": 0.93
+  }
+}

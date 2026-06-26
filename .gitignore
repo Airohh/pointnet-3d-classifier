@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+data/raw/
+data/cache/
+models/*.pt
+models/*.onnx
+mlruns/
+reports/*.log
+.venv/
+*.egg-info/
+
+# reports/*.png are kept on purpose — the README embeds the figures so they
+# must render on GitHub. reports/*.json (metrics) are kept too.

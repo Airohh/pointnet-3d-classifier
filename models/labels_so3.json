@@ -1,0 +1,27 @@
+{
+  "classes": [
+    "bathtub",
+    "bed",
+    "chair",
+    "desk",
+    "dresser",
+    "monitor",
+    "night_stand",
+    "sofa",
+    "table",
+    "toilet"
+  ],
+  "num_points": 1024,
+  "per_class_acc": {
+    "bathtub": 0.72,
+    "bed": 0.58,
+    "chair": 0.99,
+    "desk": 0.23255813953488372,
+    "dresser": 0.20930232558139536,
+    "monitor": 0.7,
+    "night_stand": 0.5465116279069767,
+    "sofa": 0.94,
+    "table": 0.88,
+    "toilet": 0.52
+  }
+}

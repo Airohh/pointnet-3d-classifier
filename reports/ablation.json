@@ -1,0 +1,17 @@
+{
+  "full": {
+    "best_acc": 0.8645374449339207,
+    "feature_transform": true,
+    "augment_train": true
+  },
+  "no_feat_tnet": {
+    "best_acc": 0.8909691629955947,
+    "feature_transform": false,
+    "augment_train": true
+  },
+  "no_aug": {
+    "best_acc": 0.8887665198237885,
+    "feature_transform": true,
+    "augment_train": false
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "sphere": {
+    "prediction": "toilet",
+    "confidence": 0.366
+  },
+  "torus": {
+    "prediction": "bathtub",
+    "confidence": 0.7566
+  },
+  "cone": {
+    "prediction": "toilet",
+    "confidence": 0.6517
+  },
+  "cylinder": {
+    "prediction": "dresser",
+    "confidence": 0.4359
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "baseline_yaw_aug": {
+    "canonical_acc": 0.8722466960352423,
+    "mean_rotated_acc": 0.1905286343612335
+  },
+  "so3_aug": {
+    "canonical_acc": 0.6409691629955947,
+    "mean_rotated_acc": 0.5922907488986784,
+    "std_rotated_acc": 0.01099999206095486
+  }
+}

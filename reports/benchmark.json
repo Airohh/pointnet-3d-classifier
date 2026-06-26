@@ -1,0 +1,37 @@
+{
+  "n_params": 3463763,
+  "model_size_mb": 13.937942,
+  "threads": 24,
+  "by_batch": {
+    "1": {
+      "ms_per_batch": 2.85,
+      "ms_per_sample": 2.85,
+      "samples_per_s": 350.5
+    },
+    "2": {
+      "ms_per_batch": 3.84,
+      "ms_per_sample": 1.92,
+      "samples_per_s": 520.8
+    },
+    "4": {
+      "ms_per_batch": 8.28,
+      "ms_per_sample": 2.07,
+      "samples_per_s": 482.9
+    },
+    "8": {
+      "ms_per_batch": 21.9,
+      "ms_per_sample": 2.74,
+      "samples_per_s": 365.3
+    },
+    "16": {
+      "ms_per_batch": 55.35,
+      "ms_per_sample": 3.46,
+      "samples_per_s": 289.1
+    },
+    "32": {
+      "ms_per_batch": 107.19,
+      "ms_per_sample": 3.35,
+      "samples_per_s": 298.5
+    }
+  }
+}
