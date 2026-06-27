@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import time
+from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
@@ -24,8 +25,8 @@ def set_seed(seed: int = C.SEED) -> None:
 def evaluate(model: PointNetClassifier, loader: DataLoader, device: str):
     model.eval()
     correct = total = 0
-    per_class_correct: dict[int, int] = {}
-    per_class_total: dict[int, int] = {}
+    per_class_correct: defaultdict[int, int] = defaultdict(int)
+    per_class_total: defaultdict[int, int] = defaultdict(int)
     for clouds, labels in loader:
         clouds, labels = clouds.to(device), labels.to(device)
         logits, _ = model(clouds)
@@ -33,8 +34,8 @@ def evaluate(model: PointNetClassifier, loader: DataLoader, device: str):
         correct += (pred == labels).sum().item()
         total += labels.size(0)
         for y, p in zip(labels.tolist(), pred.tolist()):
-            per_class_total[y] = per_class_total.get(y, 0) + 1
-            per_class_correct[y] = per_class_correct.get(y, 0) + int(y == p)
+            per_class_total[y] += 1
+            per_class_correct[y] += int(y == p)
     acc = correct / max(total, 1)
     per_class = {
         C.CLASSES[k]: per_class_correct.get(k, 0) / max(per_class_total.get(k, 1), 1)

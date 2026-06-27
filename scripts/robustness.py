@@ -31,7 +31,7 @@ from torch.utils.data import DataLoader, TensorDataset
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from pointcloud_clf import constants as C  # noqa: E402
-from pointcloud_clf.data import ModelNetDataset, download_modelnet10  # noqa: E402
+from pointcloud_clf.data import ModelNetDataset, download_modelnet10, random_so3  # noqa: E402
 from pointcloud_clf.model import PointNetClassifier  # noqa: E402
 
 NOISE_SIGMAS = [0.0, 0.01, 0.02, 0.04, 0.06, 0.08, 0.10]
@@ -60,16 +60,6 @@ def occlude(pts: np.ndarray, frac: float, rng: np.random.Generator) -> np.ndarra
     kept = pts[order[:keep]]  # drop the far cap
     fill = rng.integers(0, keep, size=n - keep)  # resample to full size
     return np.concatenate([kept, kept[fill]], axis=0).astype(np.float32)
-
-
-def random_rotation(rng: np.random.Generator) -> np.ndarray:
-    """Uniform random rotation matrix (QR of a Gaussian, sign-fixed)."""
-    a = rng.normal(size=(3, 3))
-    q, r = np.linalg.qr(a)
-    q *= np.sign(np.diag(r))
-    if np.linalg.det(q) < 0:
-        q[:, 0] *= -1
-    return q.astype(np.float32)
 
 
 # --- Eval over a perturbed copy of the whole test set ------------------------
@@ -123,7 +113,7 @@ def main() -> None:
     clean = results["noise"]["0.00"]
     rot_accs = []
     for t in range(N_ROTATION_TRIALS):
-        pert = np.stack([c @ random_rotation(rng).T for c in base])
+        pert = np.stack([c @ random_so3(rng).T for c in base])
         rot_accs.append(accuracy(model, pert, labels, device))
     results["rotation"] = {
         "canonical_acc": clean,

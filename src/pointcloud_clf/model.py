@@ -27,6 +27,11 @@ class TNet(nn.Module):
         self.fc3 = nn.Linear(256, k * k)
         self.bn1, self.bn2, self.bn3 = nn.BatchNorm1d(64), nn.BatchNorm1d(128), nn.BatchNorm1d(1024)
         self.bn4, self.bn5 = nn.BatchNorm1d(512), nn.BatchNorm1d(256)
+        # Identity added to the predicted matrix; cached as a non-persistent
+        # buffer so it is not re-allocated every forward and follows the
+        # module's device/dtype. persistent=False keeps it out of state_dict
+        # (it is a constant), so checkpoints stay compatible.
+        self.register_buffer("identity", torch.eye(k).flatten(), persistent=False)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # x: (B, k, N)
@@ -37,8 +42,7 @@ class TNet(nn.Module):
         x = F.relu(self.bn4(self.fc1(x)))
         x = F.relu(self.bn5(self.fc2(x)))
         x = self.fc3(x)  # (B, k*k)
-        identity = torch.eye(self.k, device=x.device).flatten()
-        return (x + identity).view(-1, self.k, self.k)
+        return (x + self.identity).view(-1, self.k, self.k)
 
 
 class PointNetEncoder(nn.Module):

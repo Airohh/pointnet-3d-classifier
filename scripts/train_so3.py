@@ -23,11 +23,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))  # import robustness.py
 
 from pointcloud_clf import constants as C  # noqa: E402
-from pointcloud_clf.data import ModelNetDataset, download_modelnet10  # noqa: E402
+from pointcloud_clf.data import ModelNetDataset, download_modelnet10, random_so3  # noqa: E402
 from pointcloud_clf.model import PointNetClassifier  # noqa: E402
 from pointcloud_clf.train import train  # noqa: E402
 
-rb = importlib.import_module("robustness")  # accuracy(), random_rotation()
+rb = importlib.import_module("robustness")  # accuracy()
 
 SO3_MODEL_PATH = C.MODELS_DIR / "pointnet_so3.pt"
 SO3_LABELS_PATH = C.MODELS_DIR / "labels_so3.json"
@@ -46,7 +46,7 @@ def rotation_accuracy(model_path: Path, device: str, n_trials: int = 5) -> dict:
     rng = np.random.default_rng(C.SEED)
     canonical = rb.accuracy(model, base, labels, device)
     rot = [
-        rb.accuracy(model, np.stack([c @ rb.random_rotation(rng).T for c in base]), labels, device)
+        rb.accuracy(model, np.stack([c @ random_so3(rng).T for c in base]), labels, device)
         for _ in range(n_trials)
     ]
     return {

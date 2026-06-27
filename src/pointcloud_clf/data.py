@@ -9,6 +9,7 @@ from __future__ import annotations
 import io
 import urllib.request
 import zipfile
+from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
@@ -121,12 +122,12 @@ class ModelNetDataset(Dataset):
         self.rng = np.random.default_rng(C.SEED)
         items = list_split(root, split)
         if limit_per_class is not None:
-            counts: dict[int, int] = {}
+            counts: defaultdict[int, int] = defaultdict(int)
             kept = []
             for path, label in items:
-                if counts.get(label, 0) < limit_per_class:
+                if counts[label] < limit_per_class:
                     kept.append((path, label))
-                    counts[label] = counts.get(label, 0) + 1
+                    counts[label] += 1
             items = kept
         self.items = items
         self.cache_dir = C.CACHE_DIR / split
