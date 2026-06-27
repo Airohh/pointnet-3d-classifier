@@ -16,6 +16,24 @@ the same way a 3D model would be plugged into a backend in production.
 
 ---
 
+## Demo
+
+End-to-end on a held-out ModelNet10 chair: the mesh is sampled into the
+1024-point cloud the network actually sees, then classified.
+
+![demo: chair point cloud classified by PointNet](reports/demo_pointcloud.png)
+
+```bash
+curl -F "file=@chair_0890.off" http://localhost:8000/predict
+# {"prediction": "chair", "confidence": 0.986,
+#  "top_k": [{"label": "chair", ...}, {"label": "toilet", ...}, {"label": "bed", ...}]}
+```
+
+Reproduce the figure with `python scripts/demo_figure.py`, or explore
+interactively (mesh upload + 3D viewer) with `python scripts/run_dashboard.py`.
+
+---
+
 ## Why point clouds (and why PointNet)
 
 3D parts come as meshes or scans — unordered sets of points in space. A naive
