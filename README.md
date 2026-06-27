@@ -260,6 +260,22 @@ curl -F "file=@some_part.off" http://localhost:8000/predict
   (`scripts/benchmark.py`).
 - **Model card** — `models/MODEL_CARD.md`: data, metrics, known limits, repro.
 
+### Domain transfer — it isn't really about furniture
+
+ModelNet10 happens to be furniture, but nothing in the pipeline is. `mesh →
+area-weighted sampling → normalise → PointNet → API` is the same code for any
+CAD geometry. `scripts/industrial_part.py` builds a synthetic mechanical
+bracket (plate + upright + hub + bolt bosses) and runs it through the exact
+training path:
+
+![industrial CAD part sampled by the pipeline](reports/industrial_part.png)
+
+The pipeline ingests the part fine; the *classification* is out-of-distribution
+(the furniture-trained head guesses "bed" at ~0.5 — wrong, as it must be). That
+is the honest takeaway: **swap ModelNet10 for a catalogue of industrial parts
+and retrain — the geometry → model → API machinery is unchanged.** The
+contribution is the machinery, not the specific labels.
+
 ## Design decisions
 
 - **trimesh, not Open3D** — lighter, pure-Python install, enough for
@@ -268,10 +284,8 @@ curl -F "file=@some_part.off" http://localhost:8000/predict
   caching makes epochs I/O-cheap.
 - **Same normalisation at train and serve** — the API runs the identical
   center+unit-sphere transform, so there is no train/serve skew.
-- **Domain note** — ModelNet10 is furniture, but the pipeline is
-  category-agnostic: retrain on a catalogue of industrial parts and the same
-  code classifies them. The contribution here is the *geometry → model → API*
-  machinery, not the specific labels.
+- **Category-agnostic pipeline** — see *Domain transfer* above: furniture is
+  just the dataset, the machinery generalises to industrial parts.
 
 ---
 
