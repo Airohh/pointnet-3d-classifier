@@ -14,8 +14,11 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from . import constants as C
 from .predict import predict_file
 
-app = FastAPI(title="PointCloud Classifier", version="0.1.0",
-              description="Classify 3D CAD meshes with PointNet.")
+app = FastAPI(
+    title="PointCloud Classifier",
+    version="0.1.0",
+    description="Classify 3D CAD meshes with PointNet.",
+)
 
 ALLOWED = {".off", ".ply", ".stl", ".obj"}
 

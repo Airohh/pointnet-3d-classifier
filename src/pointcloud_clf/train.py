@@ -43,38 +43,52 @@ def evaluate(model: PointNetClassifier, loader: DataLoader, device: str):
     return acc, per_class
 
 
-def train(epochs: int = C.EPOCHS, batch_size: int = C.BATCH_SIZE,
-          lr: float = C.LR, limit_per_class: int | None = None,
-          use_mlflow: bool = True, so3_aug: bool = False,
-          model_path: Path | None = None,
-          labels_path: Path | None = None,
-          feature_transform: bool = True,
-          augment_train: bool = True) -> dict:
+def train(
+    epochs: int = C.EPOCHS,
+    batch_size: int = C.BATCH_SIZE,
+    lr: float = C.LR,
+    limit_per_class: int | None = None,
+    use_mlflow: bool = True,
+    so3_aug: bool = False,
+    model_path: Path | None = None,
+    labels_path: Path | None = None,
+    feature_transform: bool = True,
+    augment_train: bool = True,
+) -> dict:
     set_seed()
     device = "cuda" if torch.cuda.is_available() else "cpu"
     root = download_modelnet10()
     model_path = model_path or C.MODEL_PATH
     labels_path = labels_path or C.LABELS_PATH
 
-    train_ds = ModelNetDataset(root, "train", limit_per_class=limit_per_class,
-                               so3_aug=so3_aug, augment_train=augment_train)
-    test_ds = ModelNetDataset(root, "test", augment_train=False,
-                              limit_per_class=limit_per_class)
-    train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True,
-                              drop_last=True, num_workers=0)
+    train_ds = ModelNetDataset(
+        root, "train", limit_per_class=limit_per_class, so3_aug=so3_aug, augment_train=augment_train
+    )
+    test_ds = ModelNetDataset(root, "test", augment_train=False, limit_per_class=limit_per_class)
+    train_loader = DataLoader(
+        train_ds, batch_size=batch_size, shuffle=True, drop_last=True, num_workers=0
+    )
     test_loader = DataLoader(test_ds, batch_size=batch_size, num_workers=0)
 
-    model = PointNetClassifier(num_classes=len(C.CLASSES),
-                               feature_transform=feature_transform).to(device)
+    model = PointNetClassifier(num_classes=len(C.CLASSES), feature_transform=feature_transform).to(
+        device
+    )
     opt = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=C.WEIGHT_DECAY)
     sched = torch.optim.lr_scheduler.StepLR(opt, step_size=10, gamma=0.5)
 
     mlf = _maybe_mlflow(use_mlflow)
     if mlf:
         mlf.start_run()
-        mlf.log_params({"epochs": epochs, "batch_size": batch_size, "lr": lr,
-                        "num_points": C.NUM_POINTS, "train_n": len(train_ds),
-                        "test_n": len(test_ds)})
+        mlf.log_params(
+            {
+                "epochs": epochs,
+                "batch_size": batch_size,
+                "lr": lr,
+                "num_points": C.NUM_POINTS,
+                "train_n": len(train_ds),
+                "test_n": len(test_ds),
+            }
+        )
 
     best_acc = 0.0
     history = []
@@ -114,14 +128,20 @@ def train(epochs: int = C.EPOCHS, batch_size: int = C.BATCH_SIZE,
     return {"best_acc": best_acc, "history": history}
 
 
-def _save(model: PointNetClassifier, per_class: dict,
-          model_path: Path = C.MODEL_PATH,
-          labels_path: Path = C.LABELS_PATH) -> None:
+def _save(
+    model: PointNetClassifier,
+    per_class: dict,
+    model_path: Path = C.MODEL_PATH,
+    labels_path: Path = C.LABELS_PATH,
+) -> None:
     C.MODELS_DIR.mkdir(parents=True, exist_ok=True)
     torch.save(model.state_dict(), model_path)
-    labels_path.write_text(json.dumps(
-        {"classes": list(C.CLASSES), "num_points": C.NUM_POINTS,
-         "per_class_acc": per_class}, indent=2))
+    labels_path.write_text(
+        json.dumps(
+            {"classes": list(C.CLASSES), "num_points": C.NUM_POINTS, "per_class_acc": per_class},
+            indent=2,
+        )
+    )
 
 
 def _maybe_mlflow(enabled: bool):
@@ -129,6 +149,7 @@ def _maybe_mlflow(enabled: bool):
         return None
     try:
         import mlflow
+
         mlflow.set_experiment(C.MLFLOW_EXPERIMENT)
         return mlflow
     except Exception as exc:  # pragma: no cover

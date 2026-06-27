@@ -33,10 +33,10 @@ class TNet(nn.Module):
         x = F.relu(self.bn1(self.conv1(x)))
         x = F.relu(self.bn2(self.conv2(x)))
         x = F.relu(self.bn3(self.conv3(x)))
-        x = torch.max(x, dim=2)[0]              # symmetric pool -> (B, 1024)
+        x = torch.max(x, dim=2)[0]  # symmetric pool -> (B, 1024)
         x = F.relu(self.bn4(self.fc1(x)))
         x = F.relu(self.bn5(self.fc2(x)))
-        x = self.fc3(x)                         # (B, k*k)
+        x = self.fc3(x)  # (B, k*k)
         identity = torch.eye(self.k, device=x.device).flatten()
         return (x + identity).view(-1, self.k, self.k)
 
@@ -58,18 +58,18 @@ class PointNetEncoder(nn.Module):
     def forward(self, x: torch.Tensor):
         # x: (B, N, 3) -> (B, 3, N)
         x = x.transpose(2, 1)
-        t_in = self.input_tnet(x)                       # (B, 3, 3)
-        x = torch.bmm(t_in, x)                          # align input
-        x = F.relu(self.bn1(self.conv1(x)))             # (B, 64, N)
+        t_in = self.input_tnet(x)  # (B, 3, 3)
+        x = torch.bmm(t_in, x)  # align input
+        x = F.relu(self.bn1(self.conv1(x)))  # (B, 64, N)
 
         t_feat = None
         if self.feat_tnet is not None:
-            t_feat = self.feat_tnet(x)                  # (B, 64, 64)
+            t_feat = self.feat_tnet(x)  # (B, 64, 64)
             x = torch.bmm(t_feat, x)
 
         x = F.relu(self.bn2(self.conv2(x)))
-        x = self.bn3(self.conv3(x))                     # (B, 1024, N)
-        x = torch.max(x, dim=2)[0]                      # (B, 1024) global feature
+        x = self.bn3(self.conv3(x))  # (B, 1024, N)
+        x = torch.max(x, dim=2)[0]  # (B, 1024) global feature
         return x, t_feat
 
 
@@ -87,7 +87,7 @@ class PointNetClassifier(nn.Module):
         feat, t_feat = self.encoder(x)
         x = F.relu(self.bn1(self.fc1(feat)))
         x = F.relu(self.bn2(self.dropout(self.fc2(x))))
-        return self.fc3(x), t_feat                      # logits, feature matrix
+        return self.fc3(x), t_feat  # logits, feature matrix
 
 
 def feature_transform_regularizer(t_feat: torch.Tensor) -> torch.Tensor:

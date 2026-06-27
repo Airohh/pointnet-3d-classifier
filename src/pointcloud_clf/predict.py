@@ -29,17 +29,21 @@ def predict_array(points: np.ndarray, top_k: int = 3) -> dict:
     """Classify a raw (N, 3) point cloud array."""
     model, classes, _ = _load_model()
     cloud = normalize(np.asarray(points, dtype=np.float32))
-    x = torch.from_numpy(cloud).float().unsqueeze(0)   # (1, N, 3)
+    x = torch.from_numpy(cloud).float().unsqueeze(0)  # (1, N, 3)
     with torch.no_grad():
         logits, _ = model(x)
         probs = F.softmax(logits, dim=1).squeeze(0)
     k = min(top_k, len(classes))
     top = torch.topk(probs, k)
-    ranked = [{"label": classes[i], "probability": round(probs[i].item(), 4)}
-              for i in top.indices.tolist()]
-    return {"prediction": ranked[0]["label"],
-            "confidence": ranked[0]["probability"],
-            "top_k": ranked}
+    ranked = [
+        {"label": classes[i], "probability": round(probs[i].item(), 4)}
+        for i in top.indices.tolist()
+    ]
+    return {
+        "prediction": ranked[0]["label"],
+        "confidence": ranked[0]["probability"],
+        "top_k": ranked,
+    }
 
 
 def predict_file(path: str | Path, top_k: int = 3) -> dict:

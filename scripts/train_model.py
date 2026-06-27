@@ -18,10 +18,16 @@ if __name__ == "__main__":
     ap.add_argument("--epochs", type=int, default=C.EPOCHS)
     ap.add_argument("--batch-size", type=int, default=C.BATCH_SIZE)
     ap.add_argument("--lr", type=float, default=C.LR)
-    ap.add_argument("--limit", type=int, default=None,
-                    help="cap samples per class (fast experiments)")
+    ap.add_argument(
+        "--limit", type=int, default=None, help="cap samples per class (fast experiments)"
+    )
     ap.add_argument("--no-mlflow", action="store_true")
     args = ap.parse_args()
 
-    train(epochs=args.epochs, batch_size=args.batch_size, lr=args.lr,
-          limit_per_class=args.limit, use_mlflow=not args.no_mlflow)
+    train(
+        epochs=args.epochs,
+        batch_size=args.batch_size,
+        lr=args.lr,
+        limit_per_class=args.limit,
+        use_mlflow=not args.no_mlflow,
+    )

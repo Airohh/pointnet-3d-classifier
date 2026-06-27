@@ -38,9 +38,18 @@ if uploaded is not None:
             st.write(f"- {r['label']}: {r['probability'] * 100:.1f}%")
     with right:
         import plotly.graph_objects as go
-        fig = go.Figure(data=[go.Scatter3d(
-            x=points[:, 0], y=points[:, 1], z=points[:, 2],
-            mode="markers", marker=dict(size=2))])
+
+        fig = go.Figure(
+            data=[
+                go.Scatter3d(
+                    x=points[:, 0],
+                    y=points[:, 1],
+                    z=points[:, 2],
+                    mode="markers",
+                    marker=dict(size=2),
+                )
+            ]
+        )
         fig.update_layout(height=500, margin=dict(l=0, r=0, t=0, b=0))
         st.plotly_chart(fig, use_container_width=True)
 

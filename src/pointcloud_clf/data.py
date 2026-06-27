@@ -20,16 +20,18 @@ from . import constants as C
 
 
 # --- Mesh -> point cloud -----------------------------------------------------
-def sample_mesh(mesh: trimesh.Trimesh, n_points: int = C.NUM_POINTS,
-                rng: np.random.Generator | None = None) -> np.ndarray:
+def sample_mesh(
+    mesh: trimesh.Trimesh, n_points: int = C.NUM_POINTS, rng: np.random.Generator | None = None
+) -> np.ndarray:
     """Uniformly sample `n_points` from a mesh surface (area-weighted)."""
     rng = rng or np.random.default_rng()
     pts, _ = trimesh.sample.sample_surface(mesh, n_points, seed=int(rng.integers(1 << 31)))
     return np.asarray(pts, dtype=np.float32)
 
 
-def load_pointcloud(path: str | Path, n_points: int = C.NUM_POINTS,
-                    rng: np.random.Generator | None = None) -> np.ndarray:
+def load_pointcloud(
+    path: str | Path, n_points: int = C.NUM_POINTS, rng: np.random.Generator | None = None
+) -> np.ndarray:
     """Load any mesh file (.off/.ply/.stl/.obj) -> (n_points, 3) array."""
     mesh = trimesh.load(path, force="mesh")
     if mesh.vertices.shape[0] == 0:
@@ -56,8 +58,7 @@ def random_so3(rng: np.random.Generator) -> np.ndarray:
     return q.astype(np.float32)
 
 
-def augment(points: np.ndarray, rng: np.random.Generator,
-            so3: bool = False) -> np.ndarray:
+def augment(points: np.ndarray, rng: np.random.Generator, so3: bool = False) -> np.ndarray:
     """Train-time augmentation: rotation + small jitter.
 
     so3=False -> yaw only (rotation about the up axis); the default, matches
@@ -104,9 +105,15 @@ def list_split(root: Path, split: str) -> list[tuple[Path, int]]:
 class ModelNetDataset(Dataset):
     """Point-cloud dataset with on-disk caching of the sampled clouds."""
 
-    def __init__(self, root: Path, split: str, n_points: int = C.NUM_POINTS,
-                 augment_train: bool = True, limit_per_class: int | None = None,
-                 so3_aug: bool = False):
+    def __init__(
+        self,
+        root: Path,
+        split: str,
+        n_points: int = C.NUM_POINTS,
+        augment_train: bool = True,
+        limit_per_class: int | None = None,
+        so3_aug: bool = False,
+    ):
         self.split = split
         self.n_points = n_points
         self.augment_train = augment_train and split == "train"
