@@ -1,0 +1,20 @@
+# Keep the build context small. models/ is intentionally NOT ignored — the
+# Dockerfile COPYs the trained checkpoint into the image.
+data/
+mlruns/
+reports/
+.git/
+.github/
+.pytest_cache/
+.ruff_cache/
+**/__pycache__/
+*.egg-info/
+.venv/
+venv/
+tests/
+docs/
+*.log
+*.md
+.dockerignore
+Dockerfile
+docker-compose*.yml

@@ -242,8 +242,11 @@ curl -F "file=@some_part.off" http://localhost:8000/predict
   checkpoint, so results are tracked and reproducible:
 
   ![MLflow run](reports/mlflow_run.png)
-- **Docker** — CPU-only image; `docker compose up` brings up the API + an
-  MLflow server.
+- **Docker** — CPU-only image, runtime-only deps (`requirements-api.txt`, no
+  training/analysis tooling) keep it lean (**1.85 GB**, down from 3.2 GB).
+  `docker compose up` brings up the API (`localhost:8010`) + an MLflow server
+  (`localhost:5010`); the trained checkpoint is baked in, so `/predict` works
+  out of the box.
 - **CI** — GitHub Actions runs ruff + pytest on every push.
 - **ONNX export** — `scripts/export_onnx.py` exports the model to
   `models/pointnet.onnx` and **verifies torch ↔ ONNX Runtime parity**

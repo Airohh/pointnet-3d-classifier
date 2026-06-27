@@ -8,8 +8,10 @@ WORKDIR /app
 
 # CPU-only torch keeps the image small
 RUN pip install --no-cache-dir torch>=2.2 --index-url https://download.pytorch.org/whl/cpu
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Runtime-only deps (no mlflow/streamlit/sklearn/onnx/pytest) — the serving
+# image stays lean; training/analysis tooling lives in requirements.txt.
+COPY requirements-api.txt .
+RUN pip install --no-cache-dir -r requirements-api.txt
 
 COPY src/ ./src/
 COPY models/ ./models/

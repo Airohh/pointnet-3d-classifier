@@ -1,15 +1,17 @@
 services:
   api:
     build: .
+    # host port 8010 — see Contexte/PORTS.md (8000 is taken by syro)
     ports:
-      - "8000:8000"
+      - "8010:8000"
     volumes:
       - ./models:/app/models:ro
 
   mlflow:
     image: ghcr.io/mlflow/mlflow:v2.13.0
     command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri /mlruns
+    # host port 5010 — see Contexte/PORTS.md (5000 is taken by syro)
     ports:
-      - "5000:5000"
+      - "5010:5000"
     volumes:
       - ./mlruns:/mlruns

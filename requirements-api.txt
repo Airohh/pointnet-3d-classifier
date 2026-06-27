@@ -1,0 +1,9 @@
+# Runtime-only dependencies for serving the API (Docker image).
+# Excludes training/analysis/dev tooling (mlflow, streamlit, matplotlib,
+# scikit-learn, onnx, pytest, ...) to keep the production image small.
+# torch is installed separately (CPU wheel) in the Dockerfile.
+numpy>=1.26
+trimesh>=4.0
+fastapi>=0.110
+uvicorn[standard]>=0.27
+python-multipart>=0.0.9
