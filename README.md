@@ -239,7 +239,9 @@ curl -F "file=@some_part.off" http://localhost:8000/predict
   data transforms, and the API contract. They run **without** the 450 MB
   dataset (synthetic trimesh primitives), so CI stays fast.
 - **MLflow** — every run logs params, per-epoch loss/accuracy and the best
-  checkpoint.
+  checkpoint, so results are tracked and reproducible:
+
+  ![MLflow run](reports/mlflow_run.png)
 - **Docker** — CPU-only image; `docker compose up` brings up the API + an
   MLflow server.
 - **CI** — GitHub Actions runs ruff + pytest on every push.
