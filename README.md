@@ -203,7 +203,7 @@ python scripts/ood_demo.py       # calibration on out-of-distribution shapes
 
 # 5. serve
 uvicorn pointcloud_clf.api:app --reload      # http://localhost:8000/docs
-streamlit run src/pointcloud_clf/dashboard.py
+python scripts/run_dashboard.py              # Streamlit demo (mesh upload + 3D viewer)
 ```
 
 Predict from the API:
